@@ -13,5 +13,5 @@ Features:
 
 * Help users for optimal routing based on different critiria (Traffic congestion, distance, obstacles, road type, etc)
 
-* Implement various graph algorithm (Dijkstra with landmark scheme, A*, Simulated Annealing with Tabulist optimization, Genetic algorithm) and fuzzy search (KMP optimization, Levinshtein Distance)
+* Develop and optimize various graph algorithm (Dijkstra with landmark scheme, A*, Simulated Annealing with Tabulist optimization, Genetic algorithm) and fuzzy search (KMP optimization, Levinshtein Distance)
 
