@@ -1,24 +1,3 @@
-
-/* 
- * Copyright 2018 University of Toronto
- *
- * Permission is hereby granted, to use this software and associated 
- * documentation files (the "Software") in course work at the University 
- * of Toronto, or for personal use. Other uses are prohibited, in 
- * particular the distribution of the Software either publicly or to third 
- * parties.
- *
- * The above copyright notice and this permission notice shall be included in 
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
 #include <boost/geometry/index/rtree.hpp>
@@ -152,13 +131,10 @@ bool load_map(std::string map_path) {
 
         globalVar.seg_weight.push_back(newSS.length * 3.6 / getStreetSegmentInfo(i).speedLimit);
 
-
-
         //insert the new street segment structure into vector
         globalVar.ssArray.push_back(newSS);
 
         globalVar.seg_street_ID.push_back(getStreetSegmentInfo(i).streetID);
-
 
     }
 
@@ -171,7 +147,6 @@ bool load_map(std::string map_path) {
         newS.length = 0.0;
         globalVar.s_id_array.push_back(newS);
     }
-
 
     for (unsigned wayIndex = 0; wayIndex < getNumberOfWays(); wayIndex++) {
         const OSMWay* temp = getWayByIndex(wayIndex);
@@ -204,9 +179,6 @@ bool load_map(std::string map_path) {
     setScale();
 
     //for the inner loop to sort the most selected 
-
-
-
 
     for (unsigned i = 0; i < getNumberOfIntersections(); i++) {
 
@@ -262,10 +234,6 @@ bool load_map(std::string map_path) {
                 intints.push_back(getStreetSegmentInfo(newSS).to);
                 weight.push_back(globalVar.ssArray[newSS].weight);
 
-
-
-
-
                 it = find(intints_nodup.begin(), intints_nodup.end(), getStreetSegmentInfo(newSS).to);
                 //No duplicated intersection found
                 if (it == intints_nodup.end()) {
@@ -287,11 +255,6 @@ bool load_map(std::string map_path) {
                     }
                 }
 
-
-
-
-
-
             } else if (i == getStreetSegmentInfo(newSS).to && !getStreetSegmentInfo(newSS).oneWay) {
                 newIn.weight.push_back(globalVar.ssArray[newSS].weight);
                 newIn.in_ids.push_back(getStreetSegmentInfo(newSS).from);
@@ -301,8 +264,6 @@ bool load_map(std::string map_path) {
                 seg_street_ID.push_back(getStreetSegmentInfo(newSS).streetID);
                 intints.push_back(getStreetSegmentInfo(newSS).from);
                 weight.push_back(globalVar.ssArray[newSS].weight);
-
-
 
                 it = find(intints_nodup.begin(), intints_nodup.end(), getStreetSegmentInfo(newSS).from);
                 //No duplicated intersection found
@@ -326,7 +287,6 @@ bool load_map(std::string map_path) {
 
             }
 
-
             if (i == getStreetSegmentInfo(newSS).to) {
                 validseg_rev.push_back(newSS);
                 seg_street_ID_rev.push_back(getStreetSegmentInfo(newSS).streetID);
@@ -341,7 +301,6 @@ bool load_map(std::string map_path) {
                 weight_rev.push_back(globalVar.ssArray[newSS].weight);
 
             }
-
 
             unsigned newS = getStreetSegmentInfo(newSS).streetID;
             newIn.s_ids.push_back(newS);
@@ -377,13 +336,7 @@ bool load_map(std::string map_path) {
             globalVar.s_id_array[globalVar.siArray[i].s_ids[j]].intersection_ids.insert(i);
 
         }
-
-
-
     }
-
-
-
 
     globalVar.int_shortest_segment.resize(getNumberOfIntersections());
 
@@ -434,11 +387,6 @@ bool load_map(std::string map_path) {
 
     }
 
-
-
-
-
-
     globalVar.int_shortest_segment_rev.resize(getNumberOfIntersections());
 
 
@@ -448,9 +396,6 @@ bool load_map(std::string map_path) {
         int num_of_intTo = valid_intersections.size();
 
         globalVar.int_shortest_segment_rev[intFrom].resize(num_of_intTo);
-
-
-
 
         vector<unsigned> valid_segments = globalVar.int_valid_seg_rev[intFrom];
         //Traversing "To" and "To" for nested loop, and 
@@ -519,7 +464,6 @@ bool load_map(std::string map_path) {
 
     }
 
-
     /**************storing intersections with "&" and without *********************/
     /**************"<unknown>" for fuzzy search************************************/
     for (unsigned num = 0; num < getNumberOfIntersections(); num++) {
@@ -532,8 +476,6 @@ bool load_map(std::string map_path) {
         }
     }
 
-
-
     /****************structure used to combine points of interests*****************/
     /*********************and street names for fuzzy search************************/
 
@@ -542,15 +484,10 @@ bool load_map(std::string map_path) {
         globalVar.street_pointOfInterest_names_fuzzy_only.insert(getStreetName(i));
     }
 
-
-
     for (unsigned i = 0; i < getNumberOfPointsOfInterest(); i++) {
         globalVar.street_pointOfInterest_names_fuzzy_only.insert(getPointOfInterestName(i));
     }
-
-
-
-
+        
     for (unsigned i = 0; i < getNumberOfPointsOfInterest(); i++) {
         globalVar.pointOfInterest_intersection_name_fuzzy_only.insert(getPointOfInterestName(i));
     }
@@ -558,7 +495,6 @@ bool load_map(std::string map_path) {
     for (unsigned i = 0; i < getNumberOfIntersections(); i++) {
         globalVar.pointOfInterest_intersection_name_fuzzy_only.insert(getIntersectionName(i));
     }
-
 
     /********************Now build the street vector.******************************/
     /***************Store street segments ID and street name***********************/
@@ -570,87 +506,6 @@ bool load_map(std::string map_path) {
         globalVar.s_id_array[currentS].street_segment_ids.push_back(i);
 
     }
-    //        int osmid = OSMIDToWayIndex(getStreetSegmentInfo(i).wayOSMID);
-    //
-    //
-    //
-    //        const OSMWay* temp = getWayByIndex(osmid);
-    //        for (unsigned tagNum = 0; tagNum < getTagCount(temp); tagNum++) {
-    //            string key, value;
-    //            tie(key, value) = getTagPair(temp, tagNum);
-    //            if (key == "highway" && (value == "motorway" || value == "trunk" || value == "primary")) {
-    //                globalVar.platinumSegment.push_back(i);
-    //                break;
-    //            }
-    //            if (key == "highway" && (value == "motorway_link" || value == "trunk_link" || value == "primary_link")) {
-    //                globalVar.goldSegment.push_back(i);
-    //                break;
-    //            }
-    //
-    //            if (key == "highway" && (value == "secondary" || value == "secondary_link")) {
-    //                globalVar.silverSegment.push_back(i);
-    //                break;
-    //            }
-    //
-    //            if (key == "highway" && (value == "tertiary_link" || value == "tertiary" || value == "unclassified" || value == "road"
-    //                    )) {
-    //                globalVar.regularSegment.push_back(i);
-    //                break;
-    //            } else globalVar.minorSegment.push_back(i);
-    //        }
-    //    }
-    //
-    //
-    //    for (unsigned i = 0; i < getNumberOfNodes(); i++) {
-    //        const OSMNode* node = getNodeByIndex(i);
-    //        for (unsigned tagNum = 0; tagNum < getTagCount(node); tagNum++) {
-    //            string key, value;
-    //            tie(key, value) = getTagPair(node, tagNum);
-    //            if (key == "railway" && value == "subway_entrance") {
-    //                globalVar.metroStations.push_back(getNodeByIndex(i)->coords());
-    //                break;
-    //            }
-    //
-    //
-    //
-    //
-    //            if (key == "amenity" && (value == "fuel")) {
-    //                globalVar.fuelstation.push_back(getNodeByIndex(i)->coords());
-    //                break;
-    //            }
-    //
-    //        }
-    //
-    //    }
-    //
-    //
-    //
-    //    for (unsigned interestID = 0; interestID < getNumberOfPointsOfInterest(); interestID++) {
-    //        string type = getPointOfInterestType(interestID);
-    //        if (type == "dentist" || type == "pharmacy" || type == "clinic" || type == "hospital") {
-    //            globalVar.hospital.push_back(getPointOfInterestPosition(interestID));
-    //            globalVar.hospitalID.push_back(interestID);
-    //        }
-    //
-    //        if (type == "restaurant" || type == "fast_food" || type == "cafe") {
-    //            globalVar.restaurant.push_back(getPointOfInterestPosition(interestID));
-    //            globalVar.restaurantID.push_back(interestID);
-    //
-    //
-    //        }
-    //
-    //        if (type == "bank") {
-    //            globalVar.bank.push_back(getPointOfInterestPosition(interestID));
-    //            globalVar.bankID.push_back(interestID);
-    //        }
-    //
-    //        if (type == "school" || type == "library") {
-    //            globalVar.edu.push_back(getPointOfInterestPosition(interestID));
-    //            globalVar.eduID.push_back(interestID);
-    //        }
-    //
-    //
-    //    }
 
     //after loading the street id array 
     //we need to calculate its length
@@ -667,8 +522,6 @@ bool load_map(std::string map_path) {
             lon() * cos(DEG_TO_RAD * globalVar.latavg), DEG_TO_RAD * getPointOfInterestPosition(j).lat()};
         interest_tree.insert(std::make_pair(MyLatLon(pos[0], pos[1]), j));
     }
-
-
 
     //Build an unordered map to use street name to access street_ID
     std::unordered_map<std::string, set<unsigned> > ::iterator it;
@@ -688,9 +541,6 @@ bool load_map(std::string map_path) {
         }
     }
 
-
-
-
     //Build an unordered_map to directly store intersections into street name
     for (unsigned i = 0; i < getNumberOfStreets(); i++) {
 
@@ -701,8 +551,6 @@ bool load_map(std::string map_path) {
             globalVar.streetName_to_intersectionsID.insert(street);
         } else {
             it->second.insert(globalVar.s_id_array[i].intersection_ids.begin(), globalVar.s_id_array[i].intersection_ids.end());
-
-
         }
     }
 
@@ -715,145 +563,6 @@ bool load_map(std::string map_path) {
         globalVar.POIName.insert(make_pair(poi, poiInfo));
     }
 
-    //    for (unsigned id = 0; id < getNumberOfFeatures(); id++) {
-    //
-    //        LatLon begin = getFeaturePoint(id, 0);
-    //        LatLon end = getFeaturePoint(id, getFeaturePointCount(id) - 1);
-    //        FeatureType tempFeature = getFeatureType(id);
-    //        bool closed = false;
-    //        if ((begin.lat() == end.lat() && begin.lon() == end.lon()) || ((tempFeature == Lake) || (tempFeature == Island))) {
-    //            closed = true;
-    //        }
-    //
-    //
-    //
-    //        if (closed) {
-    //            double area = polygonArea(id);
-    //
-    //            globalVar.areaID.insert(make_pair(area, id));
-    //        } else
-    //            globalVar.areaID.insert(make_pair(0, id));
-    //    }
-    //
-    //
-    //    multimap<double, unsigned>::iterator it2 = globalVar.areaID.end();
-    //    while (it2 != globalVar.areaID.begin()) {
-    //        it2--;
-    //        unsigned i = it2->second;
-    //        // for (unsigned i = 0; i < getNumberOfFeatures(); i++) {
-    //
-    //
-    //        featureP newFeature;
-    //        newFeature.fpoints = new t_point[getFeaturePointCount(i)];
-    //
-    //        for (unsigned j = 0; j < getFeaturePointCount(i); j++) {
-    //            LatLon Point = getFeaturePoint(i, j);
-    //            double x = (Point.lon() * DEG_TO_RAD) * cos(globalVar.latavg * DEG_TO_RAD);
-    //            double y = Point.lat() * DEG_TO_RAD;
-    //            newFeature.fpoints[j] = t_point((x - globalVar.x_min) * globalVar.x_scale, (y - globalVar.y_max) * globalVar.y_scale);
-    //        }
-    //        newFeature.size = getFeaturePointCount(i);
-    //        newFeature.featureIndex = i;
-    //
-    //        globalVar.areaFeatures.push_back(newFeature);
-    //
-    //
-    //        // }
-    //    }
-    //
-    //
-    //
-    //
-    //
-    //    for (unsigned relationIndex = 0; relationIndex < getNumberOfRelations(); relationIndex++) {
-    //        const OSMRelation* temp = getRelationByIndex(relationIndex);
-    //        pair<OSMID, unsigned> relation(temp -> id(), relationIndex);
-    //        globalVar.OSMIDToRelationIndex.insert(relation);
-    //    }
-
-
-
-
-
-
-
-
-    //    for (unsigned relationIndex = 0; relationIndex < getNumberOfRelations(); relationIndex++) {
-    //        const OSMRelation* tempRelation = getRelationByIndex(relationIndex);
-    //        for (unsigned tagIndex = 0; tagIndex < getTagCount(tempRelation); tagIndex++) {
-    //            string key, value;
-    //            tie(key, value) = getTagPair(tempRelation, tagIndex);
-    //            if (key == "route" && value == "subway") {
-    //                vector<vector < t_point>> linePoints;
-    //                vector <unsigned> subwayWayIndex1;
-    //                for (unsigned member = 0; member < tempRelation->members().size(); member++) {
-    //                    int tempWayIndex = OSMIDToWayIndex(tempRelation->members()[member].tid);
-    //                    if (tempWayIndex != -1)
-    //                        subwayWayIndex1.push_back(tempWayIndex);
-    //                }
-    //                for (unsigned wayID = 0; wayID < subwayWayIndex1.size(); wayID++) {
-    //
-    //                    vector<LatLon> stations = wayToNodes(subwayWayIndex1[wayID]);
-    //                    vector<t_point> t_stations;
-    //                    // convert all nodes to xy 
-    //                    for (unsigned id = 0; id < stations.size(); id++) {
-    //                        LatLon point = stations[id];
-    //                        t_point xy = LatLon_to_real_XY1(point);
-    //
-    //                        t_stations.push_back(xy);
-    //                    }
-    //
-    //                    linePoints.push_back(t_stations);
-    //
-    //                }
-    //
-    //
-    //
-    //                globalVar.subwayWayIndex.push_back(subwayWayIndex1);
-    //                globalVar.metro.push_back(linePoints);
-    //            }
-    //        }
-    //
-    //    }
-    //
-    //    globalVar.metroColor.push_back(t_color(227, 23, 13, 255));
-    //    globalVar.metroColor.push_back(t_color(50, 205, 50, 255));
-    //    globalVar.metroColor.push_back(t_color(255, 97, 0, 255));
-    //    globalVar.metroColor.push_back(t_color(30, 144, 255, 255));
-    //
-    //    globalVar.metroColor.push_back(t_color(153, 51, 250, 255));
-    //    globalVar.metroColor.push_back(t_color(255, 255, 0, 255));
-    //    globalVar.metroColor.push_back(t_color(56, 94, 15, 255));
-    //    globalVar.metroColor.push_back(t_color(56, 94, 15, 255));
-    //
-    //    globalVar.metroColor.push_back(t_color(176, 48, 96, 255));
-    //    globalVar.metroColor.push_back(t_color(0, 199, 140, 255));
-    //    globalVar.metroColor.push_back(t_color(115, 74, 18, 255));
-    //    globalVar.metroColor.push_back(t_color(218, 112, 214, 255));
-
-
-
-    /*  for (unsigned lineIndex = 0; lineIndex < globalVar.subwayWayIndex.size(); lineIndex ++){
-          std::vector<unsigned> tempWay1 = globalVar.subwayWayIndex[lineIndex];
-          for (unsigned i = 0; i < globalVar.subwayWayIndex[lineIndex].size(); i++){
-              unsigned id = tempWay1[i];
-            
-            
-              const OSMWay* tempWay = getWayByIndex(id);
-              const OSMNode* tempNode = getNodeByIndex(OSMIDToNodeIndex(tempWay -> ndrefs()[0]));
-            
-              LatLon tempLatLon = tempNode -> coords();
-          
-              t_point station(LatLon_to_real_XY1(tempLatLon));
-              globalVar.subwayStations.resize(lineIndex+1);
-              globalVar.subwayStations[lineIndex].push_back(station); 
-          }
-      }
-      
-    
-    
-     */
-
     ////////////////////////////////Weighted Direct Matrix///////////////////////////
 
     //resize the 2d vector
@@ -862,15 +571,6 @@ bool load_map(std::string map_path) {
     for (int i = 0; i < n; i++) {
         globalVar.weightedMatrix[i] = new double[n];
     }
-
-    /*
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (i == j) globalVar.weightedMatrix[i][j] = 0;
-            else globalVar.weightedMatrix[i][j] = INF;
-        }
-    } 
-     */
 
     //Make sure this is updated to reflect whether
     //loading the map succeeded or failed
@@ -936,10 +636,7 @@ void close_map() {
         globalVar.int_seg_street_ID.clear();
         globalVar.int_seg_street_ID_nodup.clear();
         globalVar.int_valid_seg_rev.clear();
-        globalVar.int_weight_rev.clear();
-     
-        
-        
+        globalVar.int_weight_rev.clear();   
         globalVar.areaFeatures.clear();
         closeStreetDatabase();
         closeOSMDatabase();
