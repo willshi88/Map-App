@@ -8,9 +8,6 @@
 
 #include "vector"
 
-
-
-
 //"Main function"
 double Simulated_Annealing(vector< vector <double> >& route_time, vector<node_ID>& current_node_path){
     
@@ -127,14 +124,9 @@ double time_difference_chain_reverse(vector< vector<double> > & route_time, std:
     
 }
 
-
-
 double time_difference_swap(vector< vector<double> > & route_time, std::vector<node_ID> & state, node_ID i, node_ID j){
     
     double time_difference = 0;
-     
-//    cout << "depot size: "<< globalVar.depot_distance.size() << endl;
-//    cout << "state size: "<< state.size() << endl;
     
     //Take depot into consideration
     if(i == 0){
@@ -150,15 +142,12 @@ double time_difference_swap(vector< vector<double> > & route_time, std::vector<n
         
     }
     
-    
     //If they are adjacent, just swap them
     if(j == i+1){
         time_difference -= route_time[state[i]][state[j]];
         time_difference += route_time[state[j]][state[i]];
     }
-    
-   
-    
+
     //They are not adjacent
     else{
         time_difference -= route_time[state[j-1]][state[j]];
@@ -183,9 +172,6 @@ double time_difference_swap(vector< vector<double> > & route_time, std::vector<n
     return time_difference;
  
 }
-
-
-
 
 double time_difference_rotate(vector< vector<double> > & route_time, std::vector<node_ID> & state, node_ID i, node_ID j, node_ID k){
     
@@ -232,8 +218,8 @@ double time_difference_rotate(vector< vector<double> > & route_time, std::vector
 
 double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> & result) {
 //    
-//    globalVar.Tabu_List.clear();
-//    globalVar.Tabu_List_Corresponding_Value.clear();
+   globalVar.Tabu_List.clear();
+   globalVar.Tabu_List_Corresponding_Value.clear();
     
     
     //First get the number of cities
@@ -256,13 +242,13 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
     
     
     //******************Parameter needs to test
-//    int tabu_tenure = sqrt(n);
+   int tabu_tenure = sqrt(n);
     
     
     
-    //Resize the TabuList's tabu_tenure
-//    globalVar.Tabu_List.resize(tabu_tenure);
-//    globalVar.Tabu_List_Corresponding_Value.resize(tabu_tenure, 0);
+//     Resize the TabuList's tabu_tenure
+   globalVar.Tabu_List.resize(tabu_tenure);
+   globalVar.Tabu_List_Corresponding_Value.resize(tabu_tenure, 0);
     
     
     
@@ -273,38 +259,17 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
         config.best_state[index] = instance.cities[index];
         
     }
-//    
-//    cout <<"Initial solution" << endl;
-//    cout << "state size:" << config.state.size() << endl;
-//    
-//    for(int i = 0; i < config.state.size(); i++)
-//                cout << " "<< config.state[i];
-//    
-//    cout << endl;
-    
 
-    
-    
     //Calculate the initial energy, which is the tour length
     //Remember to add the start and end depot
     config.energy = calculate_tour_length(config.state);
 
-    
-    
-    
-    
-    //cout << "Current Energy: " << config.energy << endl;
-   
-     
-    
-    
     config.best_energy = config.energy;
     
     //Set up the initial temperature
     config.temp = cooling_action->initial_temp();
     
-    
-    
+
     std::mt19937 g({std::random_device{}()});
     
     //set up an initial distribution over the possible moves, range from 0 to moves index
@@ -323,14 +288,12 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
         moves[i]->set_Move_Service(service);
         
     }
-    
-    
-    
+
     //The current proposal
     std::vector<node_ID> SA_proposal;
-//    std::vector<node_ID> Tabu_Proposal;
-//    double Tabu_best_energy;
-//    
+   std::vector<node_ID> Tabu_Proposal;
+   double Tabu_best_energy;
+   
     
     //start the optimization, outer loop is to adjust the temperature
     for(config.out_loop = 0; config.out_loop < outer_loop; config.out_loop++){
@@ -338,56 +301,39 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
         //Determine the next temperature, if smaller than end........
         config.temp = cooling_action-> next_temp(config);
         
-//        int i = 0;
-//        int j = 0;
-//        
-//         i++;
-//        cout << "new tabu: " << i << endl;
-//       
-//        
-//        vector<int> best_neighbor = config.state;
-//        
-//        while (true){      
-//        /*********Tabu selection of best neighbors****************************/
-//           
-//            //moves[1] is swap, and proposal will be iterated to be the 
-//            //best neighbor. config is passed to change the current energy (config.energy))
-//          Tabu_best_energy = Tabu_Generate_the_best_neighbour(config.state, moves[1], config, best_neighbor);
-//   
-//          //if tabu best neighbor is better than current best energy, no need to run this loop;
-//          if(Tabu_best_energy < config.best_energy){
-//              
-//
-//              config.energy =  Tabu_best_energy;
-//              
-//              config.state = best_neighbor;
-//              
-//              cout << "path: " ;
-//              for(int i = 0; i < config.state.size(); i++){
-//                  
-//                  cout << config.state[i] << " ";
-//              }
-//              cout << endl;
-//
-////              j++;
-////              cout << "while: " << j << endl;
-////              
-////            cout << "Tabu_best_energy: " << Tabu_best_energy << endl;   
-////            cout << "config.best_energy: "<< config.best_energy << endl;  
-//              
-//              
-//            //renew the Tabu_List
-//            aspiration_Rule_Selection(best_neighbor, Tabu_best_energy);
-//           
-//          }
-//
-//          
-//         else{
-//              cout << "not found" << endl;
-//              break;
-//         }
-//
-//    }
+       int i = 0;
+       int j = 0;
+       
+       i++;
+       vector<int> best_neighbor = config.state;
+       
+       while (true){      
+       /*********Tabu selection of best neighbors****************************/
+          
+           //moves[1] is swap, and proposal will be iterated to be the 
+           //best neighbor. config is passed to change the current energy (config.energy))
+         Tabu_best_energy = Tabu_Generate_the_best_neighbour(config.state, moves[1], config, best_neighbor);
+  
+         //if tabu best neighbor is better than current best energy, no need to run this loop;
+         if(Tabu_best_energy < config.best_energy){
+
+             config.energy =  Tabu_best_energy;
+             
+             config.state = best_neighbor;
+             
+             j++;             
+             
+           //renew the Tabu_List
+           aspiration_Rule_Selection(best_neighbor, Tabu_best_energy);
+          
+         }
+         
+        else{
+             cout << "not found" << endl;
+             break;
+        }
+
+   }
 
 
 
@@ -398,48 +344,20 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
             
             //proposal means the current result, which is not optimal
             SA_proposal = config.state;
-            
-      
-            
-        /*********************************************************************/
-            
-   
-            
-            
+             
             //propose a new neighbor according to some moves
             //choose a move
             int m = moveDist(g);
           
             
             //return the path difference
-            const double delta = moves[m]->propose(SA_proposal);
-            
-      //      cout << "Energy1: " << config.energy << endl;
-           
+            const double delta = moves[m]->propose(SA_proposal);         
             
             //Get the energy of the new proposal
-            const double energy = config.energy + delta; 
-
-//            double result1 = 0;
-            
-     //       cout << "Energy2: " << energy << endl;
-            
-            
-          //  result1 = instance.calculate_tour_length(config.state);
-  
-            
-         //   cout << "using formola new energy: " << result1 << endl;
-//            
-//        
-//        
-//        
-//            cout << "New_energy: " << energy << endl;
-//            
-//            cout << "Delta: " << delta << endl;
-          
+            const double energy = config.energy + delta;         
             
             /*******************************/
-            //assert(energy > 0);
+            assert(energy > 0);
              /***************************/
             
             //It means that the new path takes less time
@@ -457,10 +375,6 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
                 config.best_energy = energy;
                 config.best_state = SA_proposal;                   
                 }
-
-                
-                
-                
             }
              else  {
                 
@@ -468,10 +382,7 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
                 //Accept the proposal with certain probability
                 
                 double u = uniformDist(g);
-                
-//                cout << "random generator: " << u << endl;
-//                cout << "The current threshold: " << exp(-1/config.temp * delta) << endl;
-//                cout << "current temp: "<< config.temp << endl;
+
                 if(u <= std::exp(-0.8 /config.temp * delta)){
                     
                     config.state = SA_proposal;
@@ -485,22 +396,7 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
             
             /***********************Renew the Tabu_List************************/
             
-            //aspiration_Rule_Selection(config.state, config.energy);
-            
-
-            
-
-
-
-
-
-//            cout << "solution : " << endl;
-//            
-//            for(int i = 0; i < config.state.size(); i++){
-//                cout << "  "<< config.state[i];
-//            }
-//            
-//            cout << endl;
+            aspiration_Rule_Selection(config.state, config.energy);
           
         
         }
@@ -510,20 +406,13 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
         auto current = std::chrono::high_resolution_clock::now();    
             
         auto alpha = std::chrono::duration_cast<chrono::duration<double>>(current - globalVar.STARTING_TIME);
- 
-        
-        
-//        cout << "time now: " << alpha.count() << endl;
         
         if(alpha.count() >= 0.95 * TIME_LIMIT)
           
             return config.best_energy;
          
     }
-    
-    
-       
-    
+   
     DELETE_PTR(service);
     
     for(size_t i = 0; i < moves.size(); i++){
@@ -532,32 +421,10 @@ double Optimizer::Optimize(const TSP_Instance & instance, std::vector<node_ID> &
     }
     
     result = config.best_state;
-    
 
-
-
-    
-
- 
-    
-   //cout << "BEST ENERGY:" << config.best_energy << endl;
-//    cout << "Final tour length" << instance.calculate_tour_length(config.best_state) << endl;
-    
-//    for(node_ID index = 0; index < config.best_state.size(); index++){
-//        cout << config.best_state[index] << " ";
-//        
-//    }
-   // cout << endl;
     return config.best_energy;
     
 }
-
-
-
-
-
-
-
 
 bool if_in_Tabu_List(vector<int> & current_solution){
     
@@ -568,8 +435,6 @@ bool if_in_Tabu_List(vector<int> & current_solution){
      
     return false;
 }
-
-
 
 
 int Optimizer:: return_Best_Solution_Index_in_Tabu_List(){
@@ -583,8 +448,6 @@ int Optimizer:: return_Best_Solution_Index_in_Tabu_List(){
     
     return smallest_index;
 }
-
-
 
 
 void Optimizer:: routine_Replacement_of_Tabu_List_and_Energy(vector<int> & current_solution, double & current_energy){
@@ -605,16 +468,10 @@ void Optimizer:: routine_Replacement_of_Tabu_List_and_Energy(vector<int> & curre
     
 }
 
-
-
-
-
-
  double Optimizer::Tabu_Generate_the_best_neighbour(vector<int> & current_solution, Move* & swap, Config & config, vector<int> & best_neighbor){
 
      /****We do not need to check the Tabu_List for generating best neighbor***/
-     
-     
+    
     //Initialize the best energy of current path
     double best_energy = calculate_tour_length(current_solution);
     
@@ -640,74 +497,39 @@ void Optimizer:: routine_Replacement_of_Tabu_List_and_Energy(vector<int> & curre
         }
 
     }   
-
-    
-    
-//    current_solution = best_neighbor;
-
-    
       return best_energy;
-     
-    
  }
-
-
-
-
-
 
 //Used only for Tabu Part
 void Optimizer:: aspiration_Rule_Selection(vector<int> & current_solution, double & current_energy){
-   
-    // // if the potential best solution is better than the best, aspire it.
-    // if(current_energy < config.best_energy){
-    //     return;
-    // }
-    
-    // if the generated neighbor solution is acceptable according to
-    // self tested parameter**********************************
-    
- 
-    
-    
-//    
-//    //Find if the solution is in the Tabu_List
-//    if(if_in_Tabu_List(current_solution) == true){
-//        //aspire the solution with best energy
-//        
-//        
-//        cout << "current_solution_size: " << current_solution.size() << endl;
-//        
-//        
-//        
-//        int smallest_index = return_Best_Solution_Index_in_Tabu_List();
-//        cout << "smallest_index: " << smallest_index << endl;
-//        //Use the tabu-best solution to replace current solution
-//        current_solution = globalVar.Tabu_List[smallest_index];
-//        
-//        cout << "1" << endl;
-//        //Remember to return the current energy
-//        current_energy = globalVar.Tabu_List_Corresponding_Value[smallest_index];         
-//        
-//        cout <<"2" << endl;
-//        //Reset the removed solution, set to none
-//        globalVar.Tabu_List[smallest_index] = {};
-//        
-//        cout <<"3" << endl;
-//        //and corresponding energy, set to -1
-//        globalVar.Tabu_List_Corresponding_Value[smallest_index] = 0;
-//        
-//        cout << "4" << endl;
-//        return;
-//        
-//    }
-    
-    
-    
-    
-    
-    
-    
+    // if the potential best solution is better than the best, aspire it.
+    if(current_energy < config.best_energy){
+        return;
+    }
+    if the generated neighbor solution is acceptable according to
+    //self tested parameter**********************************
+
+   //Find if the solution is in the Tabu_List
+   if(if_in_Tabu_List(current_solution) == true){
+       //aspire the solution with best energy
+       int smallest_index = return_Best_Solution_Index_in_Tabu_List();
+
+       //Use the tabu-best solution to replace current solution
+       current_solution = globalVar.Tabu_List[smallest_index];
+
+       //Remember to return the current energy
+       current_energy = globalVar.Tabu_List_Corresponding_Value[smallest_index];         
+       
+
+       //Reset the removed solution, set to none
+       globalVar.Tabu_List[smallest_index] = {};       
+
+       //and corresponding energy, set to -1
+       globalVar.Tabu_List_Corresponding_Value[smallest_index] = 0;
+       
+       return;
+       
+   }
     //routine procedure, release the one first coming into the Tabu_List 
     routine_Replacement_of_Tabu_List_and_Energy(current_solution, current_energy);
     
