@@ -61,7 +61,6 @@ double compute_path_travel_time(const std::vector<unsigned>& path,
 std::vector<unsigned> find_path_between_intersections(const unsigned intersect_id_start,
         const unsigned intersect_id_end, const double turn_penalty) {
     
-    
     globalVar.naviRoute_seg.clear();
     
     //to order the intersection and pick the one with smallest 
@@ -76,27 +75,19 @@ std::vector<unsigned> find_path_between_intersections(const unsigned intersect_i
       
     std::vector<double> F_Vector(getNumberOfIntersections(), -1);
     
-  
-    
     std::vector<double> G_Vector(getNumberOfIntersections(), -1);
     
     G_Vector[intersect_id_start] = 0;
-    
     
     std::vector<int> parentSeg(getNumberOfIntersections(), -1);
     
     parentSeg[intersect_id_start] = -100;
     
-       
     std::vector<bool> closeVector(getNumberOfIntersections(), false);
     
     //put the starting point position into the open list
     openQueue.push(Node(intersect_id_start, 0));
-   
-    
-    
-    
-    
+
     while(!openQueue.empty()){
       
             IntersectionIndex current_intersection_ID = openQueue.top().intersection_ID;
@@ -120,17 +111,14 @@ std::vector<unsigned> find_path_between_intersections(const unsigned intersect_i
             return globalVar.naviRoute_seg;
         } 
 
-            
         //Delete the intersection ID with lowest F
         openQueue.pop();
        
         //put the intersection into close Vector
         closeVector[current_intersection_ID] = true;
-    
-                   
+                
         //highlight_intersection(current_intersection_ID);
-        
-        
+         
          //traverse all the valid intersection
         for (unsigned index = 0; index < globalVar.int_valid_seg[current_intersection_ID].size(); ++index) {
 
@@ -141,14 +129,12 @@ std::vector<unsigned> find_path_between_intersections(const unsigned intersect_i
             if(closeVector[potential_intersection_ID]){
                 continue;               
             }
-            
-            
+
          //value that will be iterated
          
           //If the current intersection's parent is starting point, then choose the shortest segment, 
                 //no need to decide turn penalty 
           
-            
           double candidate_G = 0, candidate_F = 0, candidate_H = 0;
             
           /*******Here is to calculate Heuristic value*/  
@@ -179,8 +165,7 @@ std::vector<unsigned> find_path_between_intersections(const unsigned intersect_i
                if(temp_H > candidate_H)
                    candidate_H = temp_H;                       
           }
-
-                     
+      
           //Then it is necessary to calculate turn penalty  
             
           if (parentInt[current_intersection_ID] != -100) {                                                
@@ -215,324 +200,11 @@ std::vector<unsigned> find_path_between_intersections(const unsigned intersect_i
           F_Vector[potential_intersection_ID] = candidate_F;
                       
         }    
-    
     }   
     
         std::vector<unsigned> no_path;
         return no_path;
 }
-
-
-
-
-
-
-std::vector<unsigned> Dijkstra(const unsigned intersect_id_start,
-        const unsigned intersect_id_end, const double turn_penalty){
-   
-      globalVar.naviRoute_seg.clear();
-    
-    //to order the intersection and pick the one with smallest 
-    std::priority_queue<Node, vector<Node>, cmp> openQueue;
-    
-    //boost::heap::fibonacci_heap< Node, boost::heap::compare <cmp> > openQueue;
-    
-    //Vector to store the current intersection's parent intersection
-    std::vector<int> parentInt(getNumberOfIntersections(), -1);
-
-    
-    parentInt[intersect_id_start] = -100;
-    
-    std::vector<double> G_Vector(getNumberOfIntersections(), -1);
-    G_Vector[intersect_id_start] = 0;
-
-    
-    std::vector<int> parentSeg(getNumberOfIntersections(), -1);
-    
-    parentSeg[intersect_id_start] = -100;
-       
-    std::vector<bool> closeVector(getNumberOfIntersections(), false);
-    
-    //put the starting point position into the open list
-    openQueue.push(Node(intersect_id_start, 0));
-   
-    
-    
-    
-    
-    while(!openQueue.empty()){
-      
-            IntersectionIndex current_intersection_ID = openQueue.top().intersection_ID;
-
-            
-            if(closeVector[current_intersection_ID] == true){
-                openQueue.pop();
-                continue;               
-            }
-            
-           
-        //end condition, if next point to be explored is the end intersection ID
-        if (current_intersection_ID == intersect_id_end) {
-            
-            //If the end intersection is found   
-            int result = intersect_id_end;
-            
-            while (parentSeg[result] >= 0) {
-                //      globalVar.naviRoute_seg.push_back(result); 
-
-                
-                globalVar.naviRoute_seg.insert(globalVar.naviRoute_seg.begin(), parentSeg[result]);
-                //cout << result << endl;
-                
-                result = parentInt[result];
-            }
-
-
-
-            return globalVar.naviRoute_seg;
-
-        } 
-              
-            
-            
-            
-            
-
-            
-        //Delete the intersection ID with lowest F
-        openQueue.pop();
-
-        
-        //put the intersection into close Vector
-        closeVector[current_intersection_ID] = true;
-
-
-        
-
-        
-         //traverse all the valid intersection
-        for (unsigned index = 0; index < globalVar.int_valid_seg[current_intersection_ID].size(); ++index) {
-
-            unsigned selected_segment_ID = globalVar.int_valid_seg[current_intersection_ID][index];
-            
-            IntersectionIndex potential_intersection_ID = globalVar.int_intids[current_intersection_ID][index];
-            
-            if(closeVector[potential_intersection_ID]){
-                continue;               
-            }
-            
-            
-         //value that will be iterated
-         
-          //If the current intersection's parent is starting point, then choose the shortest segment, 
-                //no need to decide turn penalty 
-          
-            
-          double candidate_G;
-                    
-          //Then it is necessary to calculate turn penalty  
-            
-          if (parentInt[current_intersection_ID] != -100) {
-              
-              //unsigned prev_street_ID = globalVar.seg_street_ID[parentSeg[current_intersection_ID]];                           
-              
-              candidate_G = G_Vector[current_intersection_ID] + globalVar.ssArray[selected_segment_ID].weight;
-              
-             // unsigned current_street_ID = globalVar.int_seg_street_ID[current_intersection_ID][index];
-                           
-              if(globalVar.seg_street_ID[parentSeg[current_intersection_ID]] != globalVar.int_seg_street_ID[current_intersection_ID][index]) 
-                  candidate_G = candidate_G + turn_penalty; 
-              
-            }
-         
-          else{
-          
-            selected_segment_ID = globalVar.int_shortest_segment[current_intersection_ID][index]; 
-            
-            candidate_G = G_Vector[current_intersection_ID] + globalVar.ssArray[selected_segment_ID].weight;;
-          }
-          
-          
-          if (candidate_G >= G_Vector[potential_intersection_ID] && G_Vector[potential_intersection_ID] != -1)
-                    continue;
-                
-          
-          openQueue.push(Node(potential_intersection_ID, candidate_G));
-                          
-          //Finally store all the iterative values
-          parentInt[potential_intersection_ID] = current_intersection_ID;
-          parentSeg[potential_intersection_ID] = selected_segment_ID;
-          G_Vector[potential_intersection_ID] = candidate_G;
-          
-              
-        }
-
-    
-    
-    }  
-       std::vector<unsigned> no_path;
-        return no_path;
-
-}
-
-
-std::vector<unsigned> find_path_to_point_of_interest(const unsigned intersect_id_start,
-    const std::string point_of_interest_name,
-    const double turn_penalty) {
-    
-    
-    globalVar.naviRoute_seg.clear();
-    globalVar.naviRoute.clear();
-    globalVar.turn_by_turn.clear();
-    vector<unsigned> poiID = get_poi_from_name(point_of_interest_name);
-    if (poiID.size() == 0)
-        return poiID;
- 
-    
-    //to order the intersection and pick the one with smallest 
-    std::priority_queue<Node, vector<Node>, cmp> openQueue;
-    
-    //boost::heap::fibonacci_heap< Node, boost::heap::compare <cmp> > openQueue;
-    
-    //Vector to store the current intersection's parent intersection
-    std::vector<int> parentInt(getNumberOfIntersections(), -1);
-
-    
-    parentInt[intersect_id_start] = -100;
-    
-    std::vector<double> G_Vector(getNumberOfIntersections(), -1);
-    G_Vector[intersect_id_start] = 0;
-
-    
-    std::vector<int> parentSeg(getNumberOfIntersections(), -1);
-    
-    parentSeg[intersect_id_start] = -100;
-       
-    std::vector<bool> closeVector(getNumberOfIntersections(), false);
-    
-    //put the starting point position into the open list
-    openQueue.push(Node(intersect_id_start, 0));
-   
-    
-    
-    
-    
-    while(!openQueue.empty()){
-      
-            IntersectionIndex current_intersection_ID = openQueue.top().intersection_ID;
-
-            
-            if(closeVector[current_intersection_ID] == true){
-                openQueue.pop();
-                continue;               
-            }
-            
-    
-                    
-            
-             //end condition, if next point to be explored is the end intersection ID
-            for(unsigned i = 0; i < poiID.size(); i++){
-        if ((current_intersection_ID == poiID[i])) {
-            
-            //If the end intersection is found   
-            int result = current_intersection_ID;
-            
-            while (parentSeg[result] >= 0) {
-                //      globalVar.naviRoute.push_back(result); 
-
-                
-                globalVar.naviRoute_seg.insert(globalVar.naviRoute_seg.begin(), parentSeg[result]);
-
-                result = parentInt[result];
-            }
-
-            //cout << compute_path_travel_time(globalVar.naviRoute_seg ,turn_penalty) << endl;
-            return globalVar.naviRoute_seg;
-
-        } 
-            } 
-            
-            
-
-            
-        //Delete the intersection ID with lowest F
-        openQueue.pop();
-
-        
-        //put the intersection into close Vector
-        closeVector[current_intersection_ID] = true;
-
-
-        
-
-        
-         //traverse all the valid intersection
-        for (unsigned index = 0; index < globalVar.int_valid_seg[current_intersection_ID].size(); ++index) {
-
-            unsigned selected_segment_ID = globalVar.int_valid_seg[current_intersection_ID][index];
-            
-            IntersectionIndex potential_intersection_ID = globalVar.int_intids[current_intersection_ID][index];
-            
-            if(closeVector[potential_intersection_ID]){
-                continue;               
-            }
-            
-            
-         //value that will be iterated
-         
-          //If the current intersection's parent is starting point, then choose the shortest segment, 
-                //no need to decide turn penalty 
-          
-            
-          double candidate_G;
-                    
-          //Then it is necessary to calculate turn penalty  
-            
-          if (parentInt[current_intersection_ID] != -100) {
-              
-              //unsigned prev_street_ID = globalVar.seg_street_ID[parentSeg[current_intersection_ID]];                           
-              
-              candidate_G = G_Vector[current_intersection_ID] + globalVar.ssArray[selected_segment_ID].weight;
-              
-             // unsigned current_street_ID = globalVar.int_seg_street_ID[current_intersection_ID][index];
-                           
-              if(globalVar.seg_street_ID[parentSeg[current_intersection_ID]] != globalVar.int_seg_street_ID[current_intersection_ID][index]) candidate_G = candidate_G + turn_penalty; 
-            }
-         
-          else{
-          
-           selected_segment_ID = globalVar.int_shortest_segment[current_intersection_ID][index]; 
-            
-          candidate_G = G_Vector[current_intersection_ID] + globalVar.ssArray[selected_segment_ID].weight;;
-          }
-          
-                if (candidate_G >= G_Vector[potential_intersection_ID] && G_Vector[potential_intersection_ID] != -1)
-                    continue;
-                
-          
-           openQueue.push(Node(potential_intersection_ID, candidate_G));
-                          
-          //Finally store all the iterative values
-          parentInt[potential_intersection_ID] = current_intersection_ID;
-          parentSeg[potential_intersection_ID] = selected_segment_ID;
-          G_Vector[potential_intersection_ID] = candidate_G;
-          
-              
-        }
-
-    
-    
-    }  
-       std::vector<unsigned> no_path;
-        return no_path;
-
-    
-
-}
-
-
-
-
 
 void get_segment_array() {
     globalVar.dongnanxibei.clear();
@@ -584,8 +256,7 @@ unsigned get_turn(unsigned sid1, unsigned sid2) {
         else id3 = getStreetSegmentInfo(sid2).from;
 
     }
-    
-    
+   
     t_point p1, p2, p3;
     double y_calc;
     double slope = 0;
@@ -614,17 +285,13 @@ unsigned get_turn(unsigned sid1, unsigned sid2) {
         else if (p3.y < y_calc) return 1;
         else return 0;
     }
-
-
     return 0;
 }
 
 // get heading direction for turn by turn navigation
 
 unsigned get_dongnanxibei(unsigned sid1, unsigned sid2) {
-    
     // conversion from 2 segments to 3 intersections
-    
     
     unsigned id2 = 0;
     unsigned id3 = 0;
@@ -647,8 +314,6 @@ unsigned get_dongnanxibei(unsigned sid1, unsigned sid2) {
         else id3 = getStreetSegmentInfo(sid2).from;
 
     }
-    
-    
     }
     
     else{
@@ -658,8 +323,6 @@ unsigned get_dongnanxibei(unsigned sid1, unsigned sid2) {
         
     }
     
-    
-
     t_point p2 = globalVar.LatLon_to_real_XY2(getIntersectionPosition(id2));
     t_point p3 = globalVar.LatLon_to_real_XY2(getIntersectionPosition(id3));
 
