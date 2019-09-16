@@ -1,16 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   Fussy_Search.h
- * Author: zhan3795
- *
- * Created on February 24, 2018, 5:38 PM
- */
-
 #ifndef FUSSY_SEARCH_H
 #define FUSSY_SEARCH_H
 
@@ -30,10 +17,7 @@ std::vector<string> return_selected_street_PointsOfInterest_names_LevenshteinDis
 //Returning street names for exactly matched inputs
 std::vector<string> return_selected_street_PointsOfInterest_names_first_few_match(string search_input);
 
-
-
 std::vector<string> find_closest_names(string input);
-
 
 //set<string> return_selected_intersections_name(string search_input);
 
