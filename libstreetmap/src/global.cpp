@@ -16,13 +16,8 @@
 global::global() {
 }
 
-
 global::~global() {
 }
-
-
- 
-
 
 double global::find_Length(unsigned id){
     double distance = 0.0;
