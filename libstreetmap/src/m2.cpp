@@ -1,24 +1,3 @@
-/*
- * Copyright 2018 University of Toronto
- *
- * Permission is hereby granted, to use this software and associated
- * documentation files (the "Software") in course work at the University
- * of Toronto, or for personal use. Other uses are prohibited, in
- * particular the distribution of the Software either publicly or to third
- * parties.
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 #include "m2.h"
 #include "graphics.h"
 #include "myButton.h"
@@ -766,8 +745,6 @@ void draw_map() {
     dsnb[5] = "SW";
     dsnb[6] = "W";
     dsnb[7] = "NW";
-
-
     set_mouse_move_input(true);
     set_keypress_input(true);
 
@@ -796,7 +773,6 @@ void drawMap() {
     globalVar.zoomScale = globalVar.x_scale * globalVar.x_scale
             / (get_visible_world().right() - get_visible_world().left())
             / 10000000;
-    //    find_path_to_point_of_interest(4916, "Loft 18+ Cinemas", 15.00000000000000000);
 
     //draw street and all of the features
 
@@ -824,10 +800,7 @@ void drawMap() {
 
     if (highlight)
         highlight_street(search_input);
-
-
-
-
+        
     if (drawNavi) {
         drawNaviSeg();
         //highlight the intersection at the beginning and the end
@@ -865,8 +838,6 @@ void drawMap() {
     copy_off_screen_buffer_to_screen();
     globalVar.alreadyDrewTextPos.clear();
     globalVar.alreadyDrewHighwayTextPos.clear();
-
-
 
 }
 
@@ -1177,31 +1148,6 @@ void drawStreetName(string streetName, t_point & pt1, t_point & pt2, int textSiz
     t_bound_box bound(pt1, pt2);
 
     settextattrs(textSize, text_angle);
-
-    //    double constant = 20 / globalVar.drawScale;
-    //
-    //    setlinewidth(1.2);
-    //    //set the visual distance of name printing
-    //
-    //    std::vector<t_point>::iterator it;
-    //
-    //    for (it = globalVar.alreadyDrewHighwayTextPos.begin();
-    //            it != globalVar.alreadyDrewHighwayTextPos.end(); it++) {
-    //
-    //        t_point drew_point = *it;
-    //
-    //        // If the point is within certain distance against to already drew point
-    //        // Do not draw this point
-    //        if ((center.x > drew_point.x - 7 * constant)
-    //                && (center.x < drew_point.x + 7 * constant)
-    //                && (center.y > drew_point.y - 7 * constant)
-    //                && (center.y < drew_point.y + 7 * constant)) return;
-    //    }
-
-
-
-
-
 
     setcolor(DARKGREY);
     drawtext(text_pos.x, text_pos.y, streetName, abs(pt1.x - pt2.x), abs(pt1.y - pt2.y));
@@ -1715,7 +1661,6 @@ void draw_search_window() {
         gas_button.display();
         food_button.display();
         help.display();
-
         //country buttons
         toronto_button.display();
         beijing_button.display();
@@ -2527,18 +2472,6 @@ void drawFeatures() {
         // for (unsigned i = 0; i < getNumberOfFeatures(); i++) {
         FeatureType t = getFeatureType(globalVar.areaFeatures[fcount].featureIndex);
 
-
-//        bool draw = false;
-//        for (unsigned k = 0; k < getFeaturePointCount(globalVar.areaFeatures[fcount].featureIndex); k++){
-//                        if (!out_of_screen(globalVar.areaFeatures[fcount].fpoints[k])){
-//                            draw = true;
-//                            break;
-//                        }
-//                    }
-//                    
-//                    if (draw == false)
-//                        continue;
-
         switch (t) {
             case Lake:
                 setcolor(176, 224, 230, 255);
@@ -2655,9 +2588,6 @@ void drawFeatures() {
                 setcolor(189, 252, 201, 255);
                 fillpoly(globalVar.areaFeatures[fcount].fpoints,
                         getFeaturePointCount(globalVar.areaFeatures[fcount].featureIndex));
-
-
-
                 break;
 
             case Stream:
@@ -2687,12 +2617,9 @@ void drawFeatures() {
                     }
 
                 }
-
-
                 break;
 
             case Unknown:
-
                 break;
             default:
                 break;
