@@ -1,11 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-
 
 #include <iostream>
 #include <vector>
@@ -38,7 +30,6 @@ unsigned LevenshteinDistance(std::string  s1, std::string  s2){
     //This loop stores the distance is number of characters to be deleted from vec
     for(unsigned i = 0; i< preVec.size(); i++)
         preVec[i] = i;  
-    
     
     for(unsigned i = 0; i < len1; i++){      
         vec[0] = i + 1;
@@ -108,7 +99,6 @@ std::vector<string> return_selected_street_PointsOfInterest_names_LevenshteinDis
                         fuzzy_selected_names.push_back(*it);
                     }
             }
-            
                      
         }
     }
@@ -116,8 +106,6 @@ std::vector<string> return_selected_street_PointsOfInterest_names_LevenshteinDis
     //Following code is used to reorder the rudimentary results to cater to 
     //user's experience. Order is based on the matching of the position of the string 
     //characters.
-    
-    
     unsigned num_of_choice = fuzzy_selected_names.size();
     unsigned smallest_size = 100;
     std::vector<string> final_selected_names;
@@ -146,7 +134,6 @@ std::vector<string> return_selected_street_PointsOfInterest_names_LevenshteinDis
            //if the final_selected_names size is full, then break
            if(final_selected_names.size() == num_of_choice)
                break;
-           
        }
     }
     
@@ -195,7 +182,6 @@ std::vector<string> return_selected_street_PointsOfInterest_names_first_few_matc
                     break;
                 }
 
-
             }
             //loop is over, check if the street names match our requirements
             if (match)
@@ -205,11 +191,8 @@ std::vector<string> return_selected_street_PointsOfInterest_names_first_few_matc
         return fuzzy_selected_names;
 
     }
-    
     return fuzzy_selected_names;
 }
-
-
 
 vector<string> find_closest_names(string input){
     vector<string> vector1 = return_selected_street_PointsOfInterest_names_first_few_match(input);
@@ -222,8 +205,3 @@ vector<string> find_closest_names(string input){
     
     return vector1;
 }
-
-
-
-
-
