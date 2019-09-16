@@ -60,13 +60,11 @@ public:
     generator({std::random_device{}()}), distribution(0, num_of_cities - 1){
         
     }
-    
     unsigned generate(){
         return distribution(generator);
     }
     
 };
-
 
 class TSP_Instance{
     
@@ -81,44 +79,27 @@ public:
     //number of nodes
     int node_size;
     
-    
-    
     void createNew(vector< vector<double> > & route_time_, 
     int node_size_,  vector<node_ID> & nodePath_cur){
         cities = nodePath_cur;
         route_time = route_time_;
 
-        node_size = node_size_;
- 
-   
+        node_size = node_size_; 
     }
-    
-    
-    
-    
 
-    
     const std:: vector<node_ID> & get_cities() const {
         return cities;
     }
-    
-
-    
 
 };
 
 
 double calculate_tour_length(const std::vector<node_ID> & tour);
 
-
-
-
-
 class Optimizer{
 public:    
    
     friend class SwapCityMove;
-    
     
     class Config{
     public:
@@ -149,10 +130,8 @@ public:
         
         bool finish;
         
-       
     };
     
-
     //This is used to define cooling procedure
     class Cooling_Action{
         
@@ -161,27 +140,20 @@ public:
         
         virtual double initial_temp() const = 0;
     
-
     };    
-    
-    
-    
-    
+
     //This class is used to allows random sampling of cities
     class Move_Service{
     public:
-        
-        
+         
         std::mt19937 generator;
    
         std::uniform_int_distribution<int> distribution;
-        
         
         Move_Service(unsigned num_of_cities):
         generator({std::random_device{}()}), distribution(0, num_of_cities -1){
         
     }
-        
         unsigned sampling(){
             return distribution(generator);
         }
@@ -192,7 +164,6 @@ public:
     //This class conduct only a single move
     class Move{
     public:
-      
         
         //Computes a random neighbor according to defined moving strategies
         virtual double propose (std::vector<node_ID> & state) const = 0;
@@ -202,23 +173,17 @@ public:
         void set_Move_Service(Move_Service* _service){
             service = _service;
         }
-        
-
-        
     protected: 
         Move_Service* service;  
         
     };
-                    
-    
-    
+
       //constructor
     
     Optimizer() :cooling_action(0), 
             outer_loop(100),
             inner_loop(1000),
             notification_cycle(250) {};
-    
             
             //The cooling action
             Cooling_Action* cooling_action;
@@ -241,10 +206,7 @@ public:
             }
             
 /***************Tabu search part for optimizing path selection*****************/            
-   
-           
 
-        
             //Return the solution in Tabu_List with best energy
             int return_Best_Solution_Index_in_Tabu_List();
             
@@ -252,43 +214,25 @@ public:
             //Routine process, remove the first-in solution and move each solution
             //one index upward, then push the current solution into Tabu_List
             void routine_Replacement_of_Tabu_List_and_Energy(vector<int> & current_solution, double & current_energy);
-            
-            
-            
-            
+
             double Tabu_Generate_the_best_neighbour(vector<int> & current_solution, Move* & swap, Config & config,  vector<int> & proposed_solution);
-            
-            
-            
+
             //This is the function to decide whether a solution should be pushed
             //into tabu list or whether an already tabu solution should be
             //aspired for optimizing global solution            
             void aspiration_Rule_Selection(vector<int> & current_solution, double & current_energy);
-            
-            
-            
-            
-            
-            
-            
-            
+  
 /******************************************************************************/           
             
 //Store the possible moves according different neighbor-generating strategies           
-private:      
-    
+private:       
             std::vector<Move*> moves;   
-            
-            
-    
+
 };
 
 
 //Function to test whether the current solution is in the tabu list
 bool if_in_Tabu_List(vector<int> & current_solution);
-
-
-
 
 
 class Geometric_Cooling_Action : public Optimizer::Cooling_Action {
@@ -300,9 +244,7 @@ public:
                Init_temp(initial_temp_),  
                 end_temp(end_temp_), 
                         
-                alpha(alpha_){}
-        
-        
+                alpha(alpha_){} 
         
         virtual double next_temp(const Optimizer::Config & config) const {
             
@@ -326,17 +268,7 @@ private:
                        
 };
 
-
-
-
-
-
-
-
-
-
 class ChainReverseMove : public Optimizer::Move{
-    
     
     //strategy to compute a random neighbour
     
@@ -353,8 +285,6 @@ class ChainReverseMove : public Optimizer::Move{
             }
          }
 
-        
-        
         unsigned random1, random2;
         bool legal = false;
         
@@ -363,9 +293,6 @@ class ChainReverseMove : public Optimizer::Move{
             
             random1 = service -> sampling();
             random2 = service -> sampling();
-            
-
-
             //We need to make sure random1 < random2, and random2 is at least 
             //2 bigger than random 1, and they are index in state
             
@@ -381,8 +308,7 @@ class ChainReverseMove : public Optimizer::Move{
                 if((node_id % 2) == 0){
                     
                     unsigned drop_Index = ID_TO_INDEX[node_id];
-                    
-                    
+                            
                     //Can be optimized
                     if(drop_Index <= random2){
                         
@@ -392,42 +318,25 @@ class ChainReverseMove : public Optimizer::Move{
                     
                 }                
             }        
-            
-            
+              
             vector<int> potential_solution = state;
             
             reverse(potential_solution.begin() + random1, potential_solution.begin() + random2 + 1);
             
             if (if_in_Tabu_List(potential_solution) == true)
                 legal == false;
-                
-                
-                
-            
-            
-            
-            
+
         }         
        
         double travel_distance_temp = time_difference_chain_reverse(globalVar.travel_distance, state, random1, random2);              
         //********************Exclude depot cases****************************
-       
-//         cout << "before reverse:" << endl;
-//        cout << "node1: " << random1 << "  " << "node2: " << random2;
-//        cout << endl;
-//        
+
         std::reverse(state.begin() + random1, state.begin() + random2 + 1);
         return travel_distance_temp;
         
     }
     
 };
-
-
-
-
-
-
 
 class SwapCityMove : public Optimizer::Move {
     
@@ -461,18 +370,14 @@ public:
             //Do not ever change the first point
             if(random1 >= random2)
                 continue;
-            
-            
-            
-            
+
             //if this point is pick up
             if(state[random1] % 2 == 0){
                
                 node_ID pick_ID = state[random1];
             
             unsigned drop_Index = ID_TO_INDEX[pick_ID];
-            
-            
+             
             
             if(drop_Index <= random2)
                 continue;
@@ -500,33 +405,12 @@ public:
                 legal = true;
         }
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        double travel_distance_temp = time_difference_swap(globalVar.travel_distance, state, random1, random2);
-        
-        
-        
-        //exclude the depot 
-//         cout << "before swap:" << endl;
-//        cout << "node1: " << random1 << "  " << "node2: " << random2;
-//        cout << endl;
+double travel_distance_temp = time_difference_swap(globalVar.travel_distance, state, random1, random2);
         
         std::swap(state[random1], state[random2]);
         
         return travel_distance_temp;
-     }
-    
-    
-    
+     }    
 };
 
 
@@ -543,8 +427,6 @@ public:
                 ID_TO_INDEX[pick_ID] = n;
             }
          }       
-    
-
         bool legal = false;
         vector<unsigned> index_vector;
     
@@ -558,7 +440,6 @@ public:
             
             
             legal = true;
-           
            
            for(unsigned index = random[0]; index < random[1]; index++){
                node_ID node_id = state[index];
@@ -575,58 +456,27 @@ public:
                    }
                }                            
            }
-            
-           
+             
            vector<int> potential_solution = state;
            rotate(potential_solution.begin()+random[0], potential_solution.begin()
                    + random[1], potential_solution.begin() + random[2] + 1);
-            
-           
-           
+      
             //If in Tabu_List, not allowed
             if (if_in_Tabu_List(potential_solution) == true)
                 legal == false;
            
-           
-           
+
            if(legal)
                index_vector = random;
         }
-    
-        
-       
-        
-        
-        //**********exclude depot***********************************
-        
-        //********************************************make the time to compute the time to be global
-       
-//        cout << "before rotate:" << endl;
-//        
-//        
-//        for(int i = 0; i < index_vector.size(); i++){
-//            cout << "node" << i << ": " << index_vector[i]<< "  ";
-//            
-//        }
-//        
-//        cout << endl;
-        
-        
-    
-        
-        
         
         double travel_distance_temp = time_difference_rotate(globalVar.travel_distance, state, index_vector[0], index_vector[1], index_vector[2]);
 
         std::rotate(state.begin()+index_vector[0], state.begin() + index_vector[1], state.begin() + index_vector[2] + 1);
         
-       
-        
+  
         return travel_distance_temp;
     }
   
     
 };
-
-
-
