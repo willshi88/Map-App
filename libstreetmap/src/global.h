@@ -43,11 +43,6 @@
 using namespace std;
 #define TIME_LIMIT   30
 
-
-
-
-
-
 class featureP{
 public:
     t_point *fpoints;
@@ -95,15 +90,6 @@ struct cmp{
    
 };
 /******************************************************************************/
-
-
-
-
-
-
-
-
-
 class global {
 public:
     
@@ -142,42 +128,28 @@ public:
    
    std::vector<unsigned> seg_street_ID;
    
-
    //Special structure used to store "invalid" segments, intersections information
    std::vector<vector<unsigned>> int_intids_rev; 
    std::vector<vector<unsigned>> int_valid_seg_rev; 
    std::vector<vector<unsigned>> int_seg_street_ID_rev;
    std::vector<vector<double>> int_weight_rev; 
    
-   
-   
-   
-   
    std::vector<vector<unsigned> >int_intids_nodup;
    std::vector<vector<unsigned> >int_ssid_nodup;
    std::vector<vector<unsigned> >int_seg_street_ID_nodup;
    std::vector<vector<double> >int_weight_nodup;  
    
-   
-   
-   
-   
-   
    std::vector<vector <int> > int_shortest_segment;//intersection_ID to shortest segment
    std::vector<vector <int> > int_second_shortest_segment;//second shortest segments
    
    std::vector<vector <int> > int_shortest_segment_rev;
-   
-   
-   
+
    std::vector<std::vector <double> > landmarks_to_int;
    std::vector<std::vector <double> > int_to_landmarks;
 
    
    // tear apart street segment
    std::vector<double> seg_weight; //segments weight (all)
-   
-   
    
    //m4 structure
    vector<vector<double>> travel_distance;
@@ -191,8 +163,6 @@ public:
    vector<double> Tabu_List_Corresponding_Value;
    chrono::high_resolution_clock::time_point STARTING_TIME;
 
-   
-   
    std::vector<LatLon> fuelstation;
    std::vector<std::vector<std::vector<t_point>>> metro;
    std::vector<t_color> metroColor;
@@ -239,9 +209,7 @@ public:
    std::vector<LatLon> edu;
    std::vector<unsigned> eduID;
    
-   
    double** weightedMatrix;
-   
    
    bool load_successful = false;
    double latavg;
