@@ -10,7 +10,7 @@ Features:
 
 * Display all names, details of citiy and caliberate to different scale
 
-* Help users for optimal routing based on different critiria (Traffic congestion, distance, obstacles, road type, etc)
+* Help users with optimal routing given names of places of interests based on different critiria (Traffic congestion, distance, obstacles, road type, etc)
 
 * Develop and optimize various graph algorithm (Dijkstra with landmark scheme, A*, Simulated Annealing with Tabulist optimization, Genetic algorithm) and fuzzy search (KMP optimization, Levinshtein Distance)
 
